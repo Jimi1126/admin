@@ -8,7 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // eslint-disable-next-line no-undef
-const isProd = /pro/.test(process.env.NODE_ENV)
+// const isProd = /pro/.test(process.env.NODE_ENV)
 
 // https://vitejs.dev/config/
 export default defineConfig({
