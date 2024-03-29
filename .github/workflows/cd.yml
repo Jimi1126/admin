@@ -51,7 +51,7 @@ jobs:
           first_ssh: |
             rm -r /www/wwwroot/web/vue/jimi1126/admin/*
           scp: |
-            ./dist/* => /www/wwwroot/web/vue/admin/
+            ./dist/* => /www/wwwroot/web/vue/jimi1126/admin/
           last_ssh: |
             nginx -t
             nginx -s reload
