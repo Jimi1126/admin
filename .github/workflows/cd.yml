@@ -1,0 +1,57 @@
+name: CD
+concurrency:
+  group: CD
+  cancel-in-progress: true
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run lint
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run test:unit
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - name: Strict Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Run build task
+        run: npm run build
+      - name: deploy pipelines
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        with:
+          host: ${{ secrets.DC_HOST }}
+          user: ${{ secrets.DC_USER }}
+          pass: ${{ secrets.DC_PASS }}
+          script: |
+            rm -r /www/wwwroot/web/vue/admin/dist
+          scp: |
+            ./dist/* => /www/wwwroot/web/vue/admin/dist
+          last_ssh: |
+            nginx -t
+            nginx -s reload
