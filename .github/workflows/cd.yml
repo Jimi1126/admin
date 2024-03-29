@@ -49,7 +49,7 @@ jobs:
           user: ${{ secrets.DC_USER }}
           pass: ${{ secrets.DC_PASS }}
           first_ssh: |
-            rm -r /www/wwwroot/web/vue/jimi1126/admin/*
+            rm /www/wwwroot/web/vue/jimi1126/admin/* -r --force
           scp: |
             ./dist/* => /www/wwwroot/web/vue/jimi1126/admin/
           last_ssh: |
